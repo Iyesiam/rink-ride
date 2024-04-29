@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 23, 2024 at 02:06 PM
+-- Generation Time: Apr 29, 2024 at 12:57 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -34,15 +34,20 @@ CREATE TABLE `booking_details` (
   `pickup_location` varchar(255) DEFAULT NULL,
   `destination_location` varchar(255) DEFAULT NULL,
   `booking_time` timestamp NOT NULL DEFAULT current_timestamp(),
-  `status` varchar(50) DEFAULT 'pending'
+  `status` varchar(50) DEFAULT 'pending',
+  `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `booking_details`
 --
 
-INSERT INTO `booking_details` (`booking_id`, `driver_id`, `driver_name`, `pickup_location`, `destination_location`, `booking_time`, `status`) VALUES
-(1, 17, 'test3', 'Nyabugogo', 'Kimironko', '2024-04-23 11:08:53', 'pending');
+INSERT INTO `booking_details` (`booking_id`, `driver_id`, `driver_name`, `pickup_location`, `destination_location`, `booking_time`, `status`, `user_id`) VALUES
+(1, 17, 'test3', 'Nyabugogo', 'Kimironko', '2024-04-23 11:08:53', 'pending', 0),
+(4, 17, 'test3', 'Nyabugogo', 'masaka', '2024-04-23 12:11:08', 'pending', 0),
+(5, 17, 'test3', 'kimironko', 'masaka', '2024-04-23 12:17:54', 'pending', 15),
+(6, 17, 'test3', 'kicukiro', 'remera', '2024-04-23 12:25:59', 'pending', 15),
+(7, 17, 'test3', 'kicukiro', 'remera', '2024-04-28 15:17:26', 'pending', 17);
 
 -- --------------------------------------------------------
 
@@ -119,6 +124,7 @@ CREATE TABLE `user_sessions` (
   `session_id` int(11) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
   `session_token` varchar(255) DEFAULT NULL,
+  `status` enum('active','disconnected') DEFAULT 'active',
   `start_time` timestamp NOT NULL DEFAULT current_timestamp(),
   `end_time` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -127,12 +133,15 @@ CREATE TABLE `user_sessions` (
 -- Dumping data for table `user_sessions`
 --
 
-INSERT INTO `user_sessions` (`session_id`, `user_id`, `session_token`, `start_time`, `end_time`) VALUES
-(1, 17, 'da0b056fab88af046277543da46af10a14d5c8cbb4125cd6b3544ba29ce53e78', '2024-04-22 10:43:34', NULL),
-(9, 15, '2f3233ebacde7b95595335c12a804ecd8697d7a6f4cd0fd94f8890d315198109', '2024-04-22 18:13:03', NULL),
-(10, 15, '0974ce5aad644445f28747a2fb79c9c281b54a9ca383d108b39735d53c279a7d', '2024-04-23 09:55:22', NULL),
-(11, 15, '761eb29a5a02f0b8e663a001e964474a352dddc0860ccee2eb9094db71922180', '2024-04-23 10:36:31', NULL),
-(12, 17, '7dfe07182006d9d96e3e6f7fc0b8d3890ac7817c0806589217f92c8b76a8764f', '2024-04-23 11:19:48', NULL);
+INSERT INTO `user_sessions` (`session_id`, `user_id`, `session_token`, `status`, `start_time`, `end_time`) VALUES
+(29, 15, 'b65a25afba3309166f534d41be08f6456ff10fa88fc21cf07da1ce8f195f9f8b', 'disconnected', '2024-04-25 09:28:18', NULL),
+(30, 17, '9f0f866deeac1397ad9253d2aacbb43d25473361946daa19dadeb0fbb82a0696', 'disconnected', '2024-04-25 09:28:40', NULL),
+(31, 15, '21321e107bc1fb221ca02e1fbb4648184dbff29c7412133ff5263a37b2f8918a', 'disconnected', '2024-04-25 13:14:01', NULL),
+(32, 15, '717948faa16bd2aae546678d84ef37870f46ebb2e16fed6a2738f082da66492a', 'active', '2024-04-28 15:13:01', NULL),
+(33, 15, 'ced85ab41211c31d69d81dd2a7961e53540541f4d2408022c22e8ab02382efc5', 'active', '2024-04-28 15:14:06', NULL),
+(34, 17, '21b3fe6ada38dda7cf2cb31709f0a3df2b227ccf4e9887131c07da70c52e2382', 'disconnected', '2024-04-28 15:16:32', NULL),
+(35, 15, '8336aee1cf26329be996ab1a664465df2bf0b1035cd3319a12e38df1b4e4f393', 'active', '2024-04-28 16:31:18', NULL),
+(36, 17, '222558e33b1fd1e3258f06b40f0ce0f92fc0c91b4ce0ee000368c553a44f964c', 'disconnected', '2024-04-28 16:32:26', NULL);
 
 --
 -- Indexes for dumped tables
@@ -178,7 +187,7 @@ ALTER TABLE `user_sessions`
 -- AUTO_INCREMENT for table `booking_details`
 --
 ALTER TABLE `booking_details`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -202,7 +211,7 @@ ALTER TABLE `user_locations`
 -- AUTO_INCREMENT for table `user_sessions`
 --
 ALTER TABLE `user_sessions`
-  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- Constraints for dumped tables
