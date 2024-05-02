@@ -272,48 +272,49 @@ if (!isset($_SESSION["user_id"])) {
         </div>
 
         <?php
-        // Database connection
-        $servername = "localhost";
-        $username = "root"; // your database username
-        $password = ""; // your database password
-        $dbname = "ridelink"; // your database name
+// Database connection
+$servername = "localhost";
+$username = "root"; // your database username
+$password = ""; // your database password
+$dbname = "ridelink"; // your database name
 
-        // Create connection
-        $conn = new mysqli($servername, $username, $password, $dbname);
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-        // Check connection
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
-        // Fetch nearby private drivers with active sessions
-        $sql = "SELECT * FROM users u
-        INNER JOIN user_sessions s ON u.user_id = s.user_id
-        WHERE u.role = 'private_driver' AND s.status = 'active'";
+// Fetch nearby private drivers with active sessions
+$sql = "SELECT * FROM users u
+INNER JOIN user_sessions s ON u.user_id = s.user_id
+WHERE u.role = 'private_driver' AND s.status = 'active'";
 $result = $conn->query($sql);
 
-        // Check if there are any nearby private drivers with active sessions
-        if ($result->num_rows > 0) {
-            // Output data of each row
-            while ($row = $result->fetch_assoc()) {
-                // Output the details of each nearby private driver
-                echo "<div class='col-8'>";
-                echo "<h5 class='card-title mb-9 fw-semibold'>" . $row["name"] . "</h5>";
-                echo "</div>";
-                echo "<div class='col-4'>";
-                echo "<div class='d-flex justify-content-end'>";
-                // Circular button with a car icon for booking ride
-                echo "<button class='book-ride-btn' onclick=\"showBookingForm('" . $row["name"] . "')\"><i class='fa fa-car'></i></button>";
-                echo "</div>";
-                echo "</div>";
-            }
-        } else {
-            echo "No nearby private drivers found with active sessions";
-        }
+// Check if there are any nearby private drivers with active sessions
+if ($result->num_rows > 0) {
+    // Output data of each row
+    while ($row = $result->fetch_assoc()) {
+        // Output the details of each nearby private driver
+        echo "<div class='col-8'>";
+        echo "<h5 class='card-title mb-9 fw-semibold'>" . $row["name"] . "</h5>";
+        echo "</div>";
+        echo "<div class='col-4'>";
+        echo "<div class='d-flex justify-content-end'>";
+        // Wrap the button inside an anchor tag with the href attribute set to booking.php
+        echo "<a href='booking.php'><button class='book-ride-btn'><i class='fa fa-car'></i></button></a>";
+        echo "</div>";
+        echo "</div>";
+    }
+} else {
+    echo "No nearby private drivers found with active sessions";
+}
 
-        // Close database connection
-        $conn->close();
-        ?>
+// Close database connection
+$conn->close();
+?>
+
 
         <div class="col-12 mt-4">
         </div>

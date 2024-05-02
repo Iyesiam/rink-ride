@@ -16,6 +16,50 @@ if (!isset($_SESSION["user_id"])) {
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- Add this script inside the <head> tag -->
+<script>
+    // Function to send location data to the server
+    function sendLocation(latitude, longitude) {
+        // Create a FormData object
+        var formData = new FormData();
+        formData.append('latitude', latitude);
+        formData.append('longitude', longitude);
+
+        // Send a POST request to the store.php file
+        fetch('store.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(data => {
+            console.log(data); // Log the response from the server
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+
+    // Function to track driver location
+    function trackDriverLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(function (position) {
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
+                sendLocation(latitude, longitude); // Send location data to the server
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    // Call the function to track driver location
+    trackDriverLocation();
+</script>
 
 </head>
 
