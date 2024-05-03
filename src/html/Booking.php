@@ -12,6 +12,7 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
+            position: relative;
         }
 
         header {
@@ -38,11 +39,14 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+            padding-bottom: 80px; /* Adjusted padding for footer */
+            position: relative;
         }
 
         #map {
             height: 400px;
             width: 100%;
+            margin-top: 20px; /* Added margin to separate map from route info */
         }
 
         form {
@@ -83,6 +87,52 @@
             bottom: 0;
             width: 100%;
         }
+
+        .loading-indicator {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Ensure the loading indicator is on top of the map */
+}
+
+
+        .loading-text {
+            font-weight: bold;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #007bff;
+            animation: spin 1s linear infinite;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* iOS Font for Heading */
+        .ios-font {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+
     </style>
 </head>
 
@@ -93,6 +143,7 @@
     </header>
 
     <div class="container">
+        <h2 class="ios-font">Plan Your Route</h2>
         <form id="routeForm">
             <label for="from">From:</label>
             <input type="text" id="from" placeholder="Enter starting location">
@@ -103,7 +154,18 @@
             <input type="submit" value="Calculate Route">
         </form>
 
+        <div id="routeInfo" style="display: none;">
+            <div id="routeTitle" class="ios-font"></div>
+            <p id="distance"></p>
+            <p id="eta"></p>
+        </div>
+
         <div id="map"></div>
+
+        <div class="loading-indicator" id="loadingIndicator">
+            <div class="loading-text">Loading...</div>
+            <div class="loading-spinner"></div>
+        </div>
     </div>
 
     <footer>
@@ -126,11 +188,19 @@
 
         var polyline;
         var startMarker, endMarker;
+        var loadingIndicator = document.getElementById('loadingIndicator');
+        var routeInfo = document.getElementById('routeInfo');
+        var routeTitle = document.getElementById('routeTitle');
+        var distanceElement = document.getElementById('distance');
+        var etaElement = document.getElementById('eta');
 
         document.getElementById("routeForm").addEventListener("submit", function (event) {
             event.preventDefault();
             var from = document.getElementById("from").value;
             var to = document.getElementById("to").value;
+
+            // Show loading indicator
+            loadingIndicator.style.display = 'block';
 
             // Use Nominatim API for geocoding
             var fromUrl = 'https://nominatim.openstreetmap.org/search?format=json&q=' + from;
@@ -166,13 +236,31 @@
                             // Add markers for start and end points
                             startMarker = L.marker(latlngs[0]).addTo(map);
                             endMarker = L.marker(latlngs[latlngs.length - 1]).addTo(map);
+
+                            // Fit the map to the bounds of the route
+                            map.fitBounds(polyline.getBounds());
+
+                            // Display route information
+                            var distance = (data.features[0].properties.summary.distance / 1000).toFixed(2); // Convert meters to kilometers
+                            var duration = Math.round(data.features[0].properties.summary.duration / 60); // Convert seconds to minutes
+                            distanceElement.textContent = 'Distance: ' + distance + ' km';
+                            etaElement.textContent = 'Estimated Time: ' + duration + ' minutes';
+                            routeTitle.textContent = from + ' - ' + to; // Set heading to starting and destination locations separated by a hyphen
+                            routeInfo.style.display = 'block';
+
+                            // Hide loading indicator
+                            loadingIndicator.style.display = 'none';
                         })
                         .catch(error => {
                             console.error('Error fetching route:', error);
+                            // Hide loading indicator in case of error
+                            loadingIndicator.style.display = 'none';
                         });
                 })
                 .catch(error => {
                     console.error('Error geocoding:', error);
+                    // Hide loading indicator in case of error
+                    loadingIndicator.style.display = 'none';
                 });
         });
     </script>
