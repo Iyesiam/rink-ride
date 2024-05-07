@@ -268,63 +268,58 @@ if (!isset($_SESSION["user_id"])) {
                 <div class="card-body">
     <div class="row align-items-start">
         <div class="col-8">
-            <h5 class="card-title mb-9 fw-semibold">NearBy Drivers</h5>
+            <h5 class="card-title mb-9 fw-semibold">Nearby Drivers</h5>
         </div>
 
         <?php
-// Database connection
-$servername = "localhost";
-$username = "root"; // your database username
-$password = ""; // your database password
-$dbname = "ridelink"; // your database name
+        // Database connection
+        $servername = "localhost";
+        $username = "root"; // your database username
+        $password = ""; // your database password
+        $dbname = "ridelink"; // your database name
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+        // Create connection
+        $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
 
-// Fetch nearby private drivers with active sessions
-$sql = "SELECT * FROM users u
-INNER JOIN user_sessions s ON u.user_id = s.user_id
-WHERE u.role = 'private_driver' AND s.status = 'active'";
-$result = $conn->query($sql);
+        // Fetch nearby private drivers with active sessions
+        $sql = "SELECT * FROM users u
+        INNER JOIN user_sessions s ON u.user_id = s.user_id
+        WHERE u.role = 'private_driver' AND s.status = 'active'";
+        $result = $conn->query($sql);
 
-// Check if there are any nearby private drivers with active sessions
-if ($result->num_rows > 0) {
-    // Output data of each row
-    while ($row = $result->fetch_assoc()) {
-        // Output the details of each nearby private driver
-        echo "<div class='col-8'>";
-        echo "<h5 class='card-title mb-9 fw-semibold'>" . $row["name"] . "</h5>";
-        echo "</div>";
-        echo "<div class='col-4'>";
-        echo "<div class='d-flex justify-content-end'>";
-        // Wrap the button inside an anchor tag with the href attribute set to booking.php
-        echo "<a href='booking.php'><button class='book-ride-btn'><i class='fa fa-car'></i></button></a>";
-        echo "</div>";
-        echo "</div>";
-    }
-} else {
-    echo "No nearby private drivers found with active sessions";
-}
+        // Check if there are any nearby private drivers with active sessions
+        if ($result->num_rows > 0) {
+            // Output data of each row
+            while ($row = $result->fetch_assoc()) {
+                // Output the details of each nearby private driver
+                echo "<div class='col-8'>";
+                echo "<h5 class='card-title mb-9 fw-semibold'>" . $row["name"] . "</h5>";
+                echo "</div>";
+                echo "<div class='col-4'>";
+                echo "<div class='d-flex justify-content-end'>";
+                // Add data-driver-name attribute to store driver's name
+                echo "<button class='book-ride-btn' data-driver-name='" . $row["name"] . "'><i class='fa fa-car'></i></button>";
+                echo "</div>";
+                echo "</div>";
+            }
+        } else {
+            echo "No nearby private drivers found with active sessions";
+        }
 
-// Close database connection
-$conn->close();
-?>
+        // Close database connection
+        $conn->close();
+        ?>
 
-
-        <div class="col-12 mt-4">
-        </div>
     </div>
 </div>
+</div>
 
-
-                </div>
-
-<!-- Booking form card -->
+<!-- Separate division for booking form card -->
 <div class="card mt-4" id="booking-card" style="display: none;">
     <div class="card-body">
         <form action="book_ride.php" method="POST">
@@ -342,55 +337,94 @@ $conn->close();
         </form>
     </div>
 </div>
+
+<!-- JavaScript to toggle visibility of booking form -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.book-ride-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                // Get the driver's name from the data-driver-name attribute
+                var driverName = btn.getAttribute('data-driver-name');
+                // Set the driver's name in the hidden input field
+                document.getElementById('driver-name').value = driverName;
+                // Display the booking form
+                document.getElementById('booking-card').style.display = 'block';
+            });
+        });
+    });
+</script>
+
 <div class="card-body p-4">
     <h5 class="card-title mb-9 fw-semibold">Ride Requests</h5>
     <div class="row">
     <?php
 
-include 'config.php'; // Include your database connection file
+    include 'config.php'; // Include your database connection file
 
-// Check if user is logged in
-if (isset($_SESSION["user_id"])) {
-    $userId = $_SESSION["user_id"];
+    // Check if user is logged in
+    if (isset($_SESSION["user_id"])) {
+        $userId = $_SESSION["user_id"];
 
-    // Fetch ride requests for the logged-in user
-    $sql_requests = "SELECT * FROM booking_details WHERE user_id = '$userId'";
-    $result_requests = $conn->query($sql_requests);
+        // Fetch ride requests for the logged-in user
+        $sql_requests = "SELECT * FROM booking_details WHERE user_id = '$userId'";
+        $result_requests = $conn->query($sql_requests);
 
-    // Display ride requests
-    if ($result_requests->num_rows > 0) {
-        // Output data of each row
-        while ($row_request = $result_requests->fetch_assoc()) {
-            echo "<div class='col-12 mb-3'>";
-            echo "<div class='card'>";
-            echo "<div class='card-body'>";
-            echo "<h5 class='card-title'>Request ID: " . $row_request["booking_id"] . "</h5>";
-            echo "<p class='card-text'>Pickup Location: " . $row_request["pickup_location"] . "</p>";
-            echo "<p class='card-text'>Destination Location: " . $row_request["destination_location"] . "</p>";
-            echo "<p class='card-text'>Booking Time: " . $row_request["booking_time"] . "</p>";
-            echo "<p class='card-text'>Status: " . $row_request["status"] . "</p>";
-            
-            // Add cancel button
-            echo "<form action='cancel_booking.php' method='POST'>";
-            echo "<input type='hidden' name='booking_id' value='" . $row_request["booking_id"] . "'>";
-            echo "<button type='submit' class='btn btn-danger' name='cancel'>Cancel</button>";
-            echo "</form>";
-            
-            echo "</div>";
-            echo "</div>";
-            echo "</div>";
+        // Display ride requests
+        if ($result_requests->num_rows > 0) {
+            // Output data of each row
+            while ($row_request = $result_requests->fetch_assoc()) {
+                echo "<div class='col-12 mb-3'>";
+                echo "<div class='card'>";
+                echo "<div class='card-body'>";
+                echo "<h5 class='card-title'>Request ID: " . $row_request["booking_id"] . "</h5>";
+                echo "<p class='card-text'>Pickup Location: " . $row_request["pickup_location"] . "</p>";
+                echo "<p class='card-text'>Destination Location: " . $row_request["destination_location"] . "</p>";
+                echo "<p class='card-text'>Booking Time: " . $row_request["booking_time"] . "</p>";
+                
+                // Apply different styles based on the status
+                $status = $row_request["status"];
+                $statusColor = "";
+                switch ($status) {
+                    case 'pending':
+                        $statusColor = "yellow";
+                        break;
+                    case 'accepted':
+                        $statusColor = "green";
+                        break;
+                    case 'declined':
+                        $statusColor = "red";
+                    case 'cancelled':
+                          $statusColor = "red";
+                        break;
+                    default:
+                        $statusColor = "black";
+                        break;
+                }
+                
+                echo "<p class='card-text' style='font-size: 1.2rem; color: $statusColor;'>Status: " . $status . "</p>";
+
+                // Add cancel button
+                echo "<form action='cancel_booking.php' method='POST'>";
+                echo "<input type='hidden' name='booking_id' value='" . $row_request["booking_id"] . "'>";
+                echo "<button type='submit' class='btn btn-danger' name='cancel'>Cancel</button>";
+                echo "</form>";
+
+                echo "</div>";
+                echo "</div>";
+                echo "</div>";
+            }
+        } else {
+            echo "<p>No ride requests found.</p>";
         }
     } else {
-        echo "<p>No ride requests found.</p>";
+        echo "<p>User not logged in.</p>";
     }
-} else {
-    echo "<p>User not logged in.</p>";
-}
-?>
+    ?>
 
 
     </div>
 </div>
+
 
 
 <script>

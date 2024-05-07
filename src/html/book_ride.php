@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     } else {
         // Redirect to login page if user is not logged in
-        header("Location: login.php");
+        header("Location: index.php");
         exit();
     }
 }
