@@ -18,26 +18,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST["name"];
     $email = $_POST["email"];
     $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
-    $role = $_POST["role"];
+    $role = "car_owner"; // Set the role to car owner
 
     // Insert user data into users table
-    $sql = "INSERT INTO users (name, email, password, role)
-            VALUES ('$name', '$email', '$password', '$role')";
+    $sql_user = "INSERT INTO users (name, email, password, role)
+                 VALUES ('$name', '$email', '$password', '$role')";
 
-    if ($conn->query($sql) === TRUE) {
+    if ($conn->query($sql_user) === TRUE) {
         // Get the ID of the inserted user
         $user_id = $conn->insert_id;
 
-        // If the user is a driver, insert additional documents into user_documents table
-        if ($role === "temporary_driver" || $role === "private_driver") {
-            $id_document = $_POST["idDocument"];
-            $driving_license = $_POST["drivingLicense"];
+        // If the user is a car owner, insert additional details into car_owners table
+        if ($role === "car_owner") {
+            $vehicle_make = $_POST["vehicleMake"];
+            $vehicle_model = $_POST["vehicleModel"];
+            $vehicle_year = $_POST["vehicleYear"];
             $vehicle_registration = $_POST["vehicleRegistration"];
 
-            $sql_docs = "INSERT INTO user_documents (user_id, id_document, driving_license, vehicle_registration)
-                         VALUES ('$user_id', '$id_document', '$driving_license', '$vehicle_registration')";
+            $sql_car_owner = "INSERT INTO car_owners (user_id, vehicle_make, vehicle_model, vehicle_year, vehicle_registration)
+                              VALUES ('$user_id', '$vehicle_make', '$vehicle_model', '$vehicle_year', '$vehicle_registration')";
 
-            $conn->query($sql_docs);
+            $conn->query($sql_car_owner);
         }
 
         // Close database connection
@@ -50,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               </script>";
         exit();
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "Error: " . $sql_user . "<br>" . $conn->error;
     }
 }
 ?>

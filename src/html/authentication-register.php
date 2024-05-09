@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 
@@ -48,6 +47,7 @@
                                             <option value="passenger">Passenger</option>
                                             <option value="temporary_driver">Temporary Driver</option>
                                             <option value="private_driver">Private Driver</option>
+                                            <option value="car_owner">Car Owner</option> <!-- Added car owner option -->
                                         </select>
                                     </div>
                                     <div class="mb-3" id="idDocumentField" style="display: none;">
@@ -64,6 +64,20 @@
                                         <input type="file" class="form-control" id="vehicleRegistration"
                                             name="vehicleRegistration">
                                     </div>
+                                    <!-- New fields for car owners -->
+                                    <div class="mb-3" id="vehicleMake" style="display: none;">
+                                        <label for="vehicleMake" class="form-label">Vehicle Make</label>
+                                        <input type="text" class="form-control" id="vehicleMake" name="vehicleMake">
+                                    </div>
+                                    <div class="mb-3" id="vehicleModel" style="display: none;">
+                                        <label for="vehicleModel" class="form-label">Vehicle Model</label>
+                                        <input type="text" class="form-control" id="vehicleModel" name="vehicleModel">
+                                    </div>
+                                    <div class="mb-3" id="vehicleYear" style="display: none;">
+                                        <label for="vehicleYear" class="form-label">Vehicle Year</label>
+                                        <input type="number" class="form-control" id="vehicleYear" name="vehicleYear">
+                                    </div>
+                                    <!-- End of new fields -->
                                     <button type="submit"
                                         class="btn btn-primary w-100 py-2 fs-4 mb-4 rounded-2">Sign Up</button>
                                     <div class="d-flex align-items-center justify-content-center">
@@ -86,18 +100,25 @@
             var roleSelect = document.getElementById("role");
             var selectedRole = roleSelect.options[roleSelect.selectedIndex].value;
 
+            // Hide all fields by default
+            document.getElementById("idDocumentField").style.display = "none";
+            document.getElementById("drivingLicenseField").style.display = "none";
+            document.getElementById("vehicleRegistrationField").style.display = "none";
+            document.getElementById("vehicleMake").style.display = "none";
+            document.getElementById("vehicleModel").style.display = "none";
+            document.getElementById("vehicleYear").style.display = "none";
+
             if (selectedRole === "temporary_driver") {
                 document.getElementById("idDocumentField").style.display = "block";
                 document.getElementById("drivingLicenseField").style.display = "block";
-                document.getElementById("vehicleRegistrationField").style.display = "none";
             } else if (selectedRole === "private_driver") {
                 document.getElementById("idDocumentField").style.display = "block";
                 document.getElementById("drivingLicenseField").style.display = "block";
                 document.getElementById("vehicleRegistrationField").style.display = "block";
-            } else {
-                document.getElementById("idDocumentField").style.display = "none";
-                document.getElementById("drivingLicenseField").style.display = "none";
-                document.getElementById("vehicleRegistrationField").style.display = "none";
+            } else if (selectedRole === "car_owner") { // Show additional fields for car owners
+                document.getElementById("vehicleMake").style.display = "block";
+                document.getElementById("vehicleModel").style.display = "block";
+                document.getElementById("vehicleYear").style.display = "block";
             }
         }
     </script>
