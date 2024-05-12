@@ -11,7 +11,7 @@ if (!isset($_SESSION["user_id"])) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Modernize Free</title>
+  <title>Ridelink</title>
   <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -101,15 +101,8 @@ if (!isset($_SESSION["user_id"])) {
                       <i class="ti ti-user fs-6"></i>
                       <p class="mb-0 fs-3">My Profile</p>
                     </a>
-                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
-                      <i class="ti ti-mail fs-6"></i>
-                      <p class="mb-0 fs-3">My Account</p>
-                    </a>
-                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
-                      <i class="ti ti-list-check fs-6"></i>
-                      <p class="mb-0 fs-3">My Task</p>
-                    </a>
-                    <a href="logout-private.php" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                   
+                    <a href="logout.php" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
                   </div>
                 </div>
               </li>
@@ -244,8 +237,20 @@ echo "</form>";
             // Include the configuration file
             include 'config.php';
 
-            // Fetch accepted ride requests
-            $sql = "SELECT * FROM booking_details WHERE status = 'accepted'";
+            // Get the role of the current user from the session
+            $role = $_SESSION["role"];
+
+            // Fetch accepted ride requests for the current driver based on their role
+            $user_id = $_SESSION["user_id"]; // Assuming user_id is the unique identifier for drivers
+            $sql = "SELECT * FROM booking_details WHERE ";
+
+            // If the user is a temporary driver or private driver, select requests where their ID matches the driver_id
+            if ($role == 'temporary_driver' || $role == 'private_driver') {
+                $sql .= "driver_id = $user_id AND ";
+            }
+
+            // Continue the query to select accepted requests
+            $sql .= "status = 'accepted'";
             $result = $conn->query($sql);
 
             if ($result->num_rows > 0) {
@@ -253,7 +258,6 @@ echo "</form>";
                 // Output data of each row
                 while ($row = $result->fetch_assoc()) {
                     echo '<h5 class="card-title mb-3 fw-semibold">Request ' . $requestCount . '</h5>';
-                    echo '<p><strong>Driver Name:</strong> ' . $row["driver_name"] . '</p>';
                     echo '<p><strong>Pickup Location:</strong> ' . $row["pickup_location"] . '</p>';
                     echo '<p><strong>Drop-off Location:</strong> ' . $row["destination_location"] . '</p>';
                     echo '<p><strong>Status:</strong> ' . $row["status"] . '</p>';
@@ -272,8 +276,9 @@ echo "</form>";
             $conn->close();
             ?>
         </div>
-            </div>
-        </div>
+    </div>
+</div>
+
     </div>
 </div>
         <div class="py-6 px-6 text-center">

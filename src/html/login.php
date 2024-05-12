@@ -36,41 +36,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["email"] = $row["email"];
             $_SESSION["role"] = $row["role"];
 
-            // Get initial user location using Geolocation API
-            ?>
-            <script>
-                // Function to handle success in getting user's current location
-                function getLocationSuccess(position) {
-                    var latitude = position.coords.latitude;
-                    var longitude = position.coords.longitude;
+            // Generate session token
+            $session_token = bin2hex(random_bytes(16));
 
-                    // Send the latitude and longitude to the server to insert into the user_locations table
-                    var xhttp = new XMLHttpRequest();
-                    xhttp.onreadystatechange = function() {
-                        if (this.readyState == 4 && this.status == 200) {
-                            console.log("Location inserted successfully");
-                        }
-                    };
-                    xhttp.open("POST", "insert_location.php", true);
-                    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                    xhttp.send("user_id=<?php echo $row["user_id"]; ?>&latitude=" + latitude + "&longitude=" + longitude);
-                }
-
-                // Function to handle error in getting user's current location
-                function getLocationError(error) {
-                    console.error("Error getting location:", error);
-                }
-
-                // Get the user's current location
-                navigator.geolocation.getCurrentPosition(getLocationSuccess, getLocationError);
-            </script>
-            <?php
-
-            // Insert a record into user_sessions table for active session
-            $session_token = bin2hex(random_bytes(32)); // Generate a random session token
-            $user_id = $row["user_id"];
-            $sql_insert_session = "INSERT INTO user_sessions (user_id, session_token, status) VALUES ('$user_id', '$session_token', 'active')";
-            $conn->query($sql_insert_session);
+            // Insert session into user_sessions table
+            $insert_sql = "INSERT INTO user_sessions (user_id, session_token, status, start_time) 
+                           VALUES ('" . $row["user_id"] . "', '$session_token', 'active', NOW())";
+            $conn->query($insert_sql);
 
             // Redirect user based on their role
             switch ($_SESSION["role"]) {
@@ -82,6 +54,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     break;
                 case "temporary_driver":
                     header("Location: t-driver-home.php");
+                    break;
+                case "car_owner":
+                    header("Location: car-owner-home.php");
                     break;
                 default:
                     // Redirect to a default page if the role is not recognized

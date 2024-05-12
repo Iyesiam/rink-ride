@@ -60,7 +60,7 @@ if (!isset($_SESSION["user_id"])) {
     <i class="ti ti-user fs-6"></i>
     <p class="mb-0 fs-3">My Profile</p>
 </a>
-                    
+                  
                     <a href="logout.php" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
                   </div>
                 </div>
@@ -133,7 +133,7 @@ if (!isset($_SESSION["user_id"])) {
                 <div class="card-body">
     <div class="row align-items-start">
         <div class="col-8">
-            <h5 class="card-title mb-9 fw-semibold">Nearby Drivers</h5>
+            <h5 class="card-title mb-9 fw-semibold">Nearby Temporary Drivers</h5>
         </div>
 
         <?php
@@ -151,17 +151,17 @@ if (!isset($_SESSION["user_id"])) {
             die("Connection failed: " . $conn->connect_error);
         }
 
-        // Fetch nearby private drivers with active sessions
+        // Fetch nearby temporary drivers with active sessions (assuming they have a certain role)
         $sql = "SELECT * FROM users u
         INNER JOIN user_sessions s ON u.user_id = s.user_id
-        WHERE u.role = 'private_driver' AND s.status = 'active'";
+        WHERE u.role = 'temporary_driver' AND s.status = 'active'";
         $result = $conn->query($sql);
 
-        // Check if there are any nearby private drivers with active sessions
+        // Check if there are any nearby temporary drivers with active sessions
         if ($result->num_rows > 0) {
             // Output data of each row
             while ($row = $result->fetch_assoc()) {
-                // Output the details of each nearby private driver
+                // Output the details of each nearby temporary driver
                 echo "<div class='col-8'>";
                 echo "<h5 class='card-title mb-9 fw-semibold'>" . $row["name"] . "</h5>";
                 echo "</div>";
@@ -173,7 +173,7 @@ if (!isset($_SESSION["user_id"])) {
                 echo "</div>";
             }
         } else {
-            echo "No nearby private drivers found with active sessions";
+            echo "No nearby temporary drivers found with active sessions";
         }
 
         // Close database connection
@@ -182,12 +182,13 @@ if (!isset($_SESSION["user_id"])) {
 
     </div>
 </div>
+
 </div>
 
 <!-- Separate division for booking form card -->
 <div class="card mt-4" id="booking-card" style="display: none;">
     <div class="card-body">
-        <form action="book_ride.php" method="POST">
+        <form action="book_tempdrvr.php" method="POST">
             <div class="mb-3">
                 <label for="pickup-location" class="form-label">Pickup Location:</label>
                 <input type="text" class="form-control" id="pickup-location" name="pickup_location" required>
@@ -312,7 +313,6 @@ if (!isset($_SESSION["user_id"])) {
     </div>
     <ul class="timeline-widget mb-0 position-relative mb-n5">
         <?php
-
         // Database connection
         $servername = "localhost";
         $username = "root"; // your database username
@@ -327,11 +327,8 @@ if (!isset($_SESSION["user_id"])) {
             die("Connection failed: " . $conn->connect_error);
         }
 
-        // Retrieve the current user's ID
-        $user_id = $_SESSION["user_id"];
-
-        // Retrieve recent rides for the current user from the database
-        $sql = "SELECT pickup_location, destination_location, booking_time FROM booking_details WHERE user_id = $user_id ORDER BY booking_time DESC LIMIT 5";
+        // Retrieve recent rides from the database
+        $sql = "SELECT pickup_location, destination_location, booking_time FROM booking_details ORDER BY booking_time DESC LIMIT 5";
         $result = $conn->query($sql);
 
         // Check if there are any results
@@ -365,8 +362,7 @@ if (!isset($_SESSION["user_id"])) {
         $conn->close();
         ?>
     </ul>
-</div>
-
+            </div>
 
             </div>
           </div>
