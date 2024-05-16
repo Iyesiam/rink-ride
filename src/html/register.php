@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST["name"];
     $email = $_POST["email"];
     $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
-    $role = "car_owner"; // Set the role to car owner
+    $role =$_POST["role"];; // Set the role to car owner
 
     // Insert user data into users table
     $sql_user = "INSERT INTO users (name, email, password, role)
