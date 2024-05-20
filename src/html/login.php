@@ -22,8 +22,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST["password"];
 
     // Check if user exists with the provided email
-    $sql = "SELECT * FROM users WHERE email = '$email'";
-    $result = $conn->query($sql);
+    $sql = "SELECT * FROM users WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if ($result->num_rows == 1) {
         $row = $result->fetch_assoc();
@@ -41,8 +44,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Insert session into user_sessions table
             $insert_sql = "INSERT INTO user_sessions (user_id, session_token, status, start_time) 
-                           VALUES ('" . $row["user_id"] . "', '$session_token', 'active', NOW())";
-            $conn->query($insert_sql);
+                           VALUES (?, ?, 'active', NOW())";
+            $stmt = $conn->prepare($insert_sql);
+            $stmt->bind_param("is", $row["user_id"], $session_token);
+            $stmt->execute();
 
             // Redirect user based on their role
             switch ($_SESSION["role"]) {
@@ -69,8 +74,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<script>alert('Invalid email or password.'); window.location.href = 'index.php';</script>";
         }
     } else {
-        // User not found
-        echo "<script>alert('Invalid email or password.'); window.location.href = 'index.php';</script>";
+        // Check if the email matches the admin email
+        $sql = "SELECT * FROM admin WHERE email = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+
+            // Verify password
+            if (password_verify($password, $row["password"])) {
+                // Set session variables for admin authentication
+                $_SESSION["admin_id"] = $row["admin_id"];
+                $_SESSION["username"] = $row["username"];
+                $_SESSION["email"] = $row["email"];
+
+                // Redirect to the admin dashboard
+                header("Location: admin-dash.php");
+                exit();
+            } else {
+                // Invalid password
+                echo "<script>alert('Invalid email or password.'); window.location.href = 'index.php';</script>";
+            }
+        } else {
+            // User not found
+            echo "<script>alert('Invalid email or password.'); window.location.href = 'index.php';</script>";
+        }
     }
 }
+
+$conn->close();
 ?>
