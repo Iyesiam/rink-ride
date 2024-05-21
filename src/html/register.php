@@ -19,7 +19,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
     $phone = $_POST["phone"];
     $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
+<<<<<<< HEAD
     $role = $_POST["role"];
+=======
+    $role =$_POST["role"];; // Set the role to car owner
+>>>>>>> 6199feed1639cc2457a0609dfe82debfc98ff3be
 
     // Insert user data into users table
     $sql_user = "INSERT INTO users (name, email, phone, password, role)

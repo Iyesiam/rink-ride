@@ -3,7 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
+<<<<<<< HEAD
 -- Generation Time: May 21, 2024 at 01:18 PM
+=======
+-- Generation Time: May 16, 2024 at 08:53 PM
+>>>>>>> 6199feed1639cc2457a0609dfe82debfc98ff3be
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -64,7 +68,12 @@ CREATE TABLE `booking_details` (
 --
 
 INSERT INTO `booking_details` (`booking_id`, `driver_id`, `driver_name`, `pickup_location`, `destination_location`, `booking_time`, `status`, `user_id`) VALUES
+<<<<<<< HEAD
 (33, 17, 'test3', 'Nyabugogo', 'remera', '2024-05-21 09:52:31', 'accepted', 15);
+=======
+(29, 29, 'thisistempdriver', 'Nyabugogo', 'masaka', '2024-05-10 13:30:45', 'accepted', 29),
+(30, 17, 'test3', 'Remera', 'Nyarugenge', '2024-05-10 13:51:15', 'accepted', 17);
+>>>>>>> 6199feed1639cc2457a0609dfe82debfc98ff3be
 
 -- --------------------------------------------------------
 
@@ -110,7 +119,14 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `name`, `email`, `password`, `role`, `registration_date`, `profile_picture`) VALUES
 (15, 'test', 'test@gmail.com', '$2y$10$/R.gjQ5HsFUAIeM0FM3Z7Ohx.mGM0sglpN50NmICk7v2nvlvd3kX6', 'passenger', '2024-04-16 13:46:39', 'uploads/table.jpg'),
+<<<<<<< HEAD
 (17, 'test3', 'test3@gmail.com', '$2y$10$wPLc5PKDzB0L3...nItfXuqqA4in.kM4NRaYMitLlySip2b5xMCYK', 'private_driver', '2024-04-16 18:18:26', 'uploads/logo.png'),
+=======
+(16, 'User2', 'Test2@gmail.com', '$2y$10$03k44jv49JtTeLzDfXAEm.Zea99nAbWHYfAkMA8VkVkfObCJCbukS', 'temporary_driver', '2024-04-16 14:11:30', NULL),
+(17, 'test3', 'test3@gmail.com', '$2y$10$wPLc5PKDzB0L3...nItfXuqqA4in.kM4NRaYMitLlySip2b5xMCYK', 'private_driver', '2024-04-16 18:18:26', 'uploads/logo.png'),
+(25, 'mybigbruh', 'mybigbruh@gmail.com', '$2y$10$jxFLxiukJkJmZ2cWcrm6B.za9aBI3UHw13CoTSPx1GEC.eSP7SY7G', 'temporary_driver', '2024-04-17 08:29:20', NULL),
+(26, 'yourbigbruh', 'yourbigbruh@gmail.com', '$2y$10$ZSD.1X4B7qZ31uNudCGJkO.k3muLi7QbpTq0wXMhVUurE/OdyURrW', 'temporary_driver', '2024-04-17 08:32:28', NULL),
+>>>>>>> 6199feed1639cc2457a0609dfe82debfc98ff3be
 (27, 'yourbigbruh', 'yourbigbro@gmail.com', '$2y$10$qSH4FEPoak6wOeVDiWUEe.QMGLsVN1LPXwz015D2q4XfJMzqFJUxO', 'temporary_driver', '2024-05-08 14:50:51', NULL),
 (28, 'mybigbruh', 'mybigbro@gmail.com', '$2y$10$cicSz5F6EST6fvFY3Q/6zuyUC7XL5QtMo6Jnr1dRmU/HU1hcYvnGi', 'car_owner', '2024-05-09 10:22:26', NULL),
 (29, 'thisistempdriver', 'thisistempdriver@gmail.com', '$2y$10$Zur9f/nQAKxAww3YZrk/B.1nxCI846QP852KZwXUD7bl2OXtRFp9u', 'temporary_driver', '2024-05-09 15:33:47', NULL),
@@ -685,6 +701,7 @@ INSERT INTO `user_locations` (`location_id`, `user_id`, `latitude`, `longitude`,
 (536, 17, -1.965972, 30.054957, '2024-05-10 13:56:07'),
 (537, 17, -1.965972, 30.054957, '2024-05-10 13:56:07'),
 (538, 17, -1.965972, 30.054957, '2024-05-10 14:05:45'),
+<<<<<<< HEAD
 (539, 17, -1.965972, 30.054957, '2024-05-10 14:05:47'),
 (540, 17, -1.951883, 30.054957, '2024-05-16 19:04:20'),
 (541, 17, -1.951883, 30.054957, '2024-05-16 19:04:20'),
@@ -794,6 +811,9 @@ INSERT INTO `user_locations` (`location_id`, `user_id`, `latitude`, `longitude`,
 (646, 17, -1.955675, 30.063889, '2024-05-21 09:55:11'),
 (647, 17, -1.955600, 30.063908, '2024-05-21 09:57:19'),
 (648, 17, -1.955600, 30.063908, '2024-05-21 09:57:20');
+=======
+(539, 17, -1.965972, 30.054957, '2024-05-10 14:05:47');
+>>>>>>> 6199feed1639cc2457a0609dfe82debfc98ff3be
 
 -- --------------------------------------------------------
 
@@ -811,6 +831,7 @@ CREATE TABLE `user_sessions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+<<<<<<< HEAD
 -- Dumping data for table `user_sessions`
 --
 
@@ -818,6 +839,8 @@ INSERT INTO `user_sessions` (`session_id`, `user_id`, `session_token`, `status`,
 (150, 28, '7c608fb251df8954ba3372825d04b3b3', 'active', '2024-05-21 09:58:11', NULL);
 
 --
+=======
+>>>>>>> 6199feed1639cc2457a0609dfe82debfc98ff3be
 -- Indexes for dumped tables
 --
 
@@ -882,7 +905,11 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `booking_details`
 --
 ALTER TABLE `booking_details`
+<<<<<<< HEAD
   MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+=======
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+>>>>>>> 6199feed1639cc2457a0609dfe82debfc98ff3be
 
 --
 -- AUTO_INCREMENT for table `car_owners`
@@ -906,13 +933,21 @@ ALTER TABLE `user_documents`
 -- AUTO_INCREMENT for table `user_locations`
 --
 ALTER TABLE `user_locations`
+<<<<<<< HEAD
   MODIFY `location_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=649;
+=======
+  MODIFY `location_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=540;
+>>>>>>> 6199feed1639cc2457a0609dfe82debfc98ff3be
 
 --
 -- AUTO_INCREMENT for table `user_sessions`
 --
 ALTER TABLE `user_sessions`
+<<<<<<< HEAD
   MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=151;
+=======
+  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
+>>>>>>> 6199feed1639cc2457a0609dfe82debfc98ff3be
 
 --
 -- Constraints for dumped tables
