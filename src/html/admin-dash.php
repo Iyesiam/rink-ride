@@ -19,13 +19,6 @@ $bookingResult = $conn->query($bookingSql);
 $userSql = "SELECT * FROM users";
 $userResult = $conn->query($userSql);
 ?>
-<?php
-session_start();
-if (!isset($_SESSION['admin_id'])) {
-    header("Location: index.php");
-    exit();
-}
-?>
 
 <!DOCTYPE html>
 <html lang="en">

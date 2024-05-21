@@ -17,12 +17,13 @@ if ($conn->connect_error) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST["name"];
     $email = $_POST["email"];
+    $phone = $_POST["phone"];
     $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
-    $role = "car_owner"; // Set the role to car owner
+    $role = $_POST["role"];
 
     // Insert user data into users table
-    $sql_user = "INSERT INTO users (name, email, password, role)
-                 VALUES ('$name', '$email', '$password', '$role')";
+    $sql_user = "INSERT INTO users (name, email, phone, password, role)
+                 VALUES ('$name', '$email', '$phone', '$password', '$role')";
 
     if ($conn->query($sql_user) === TRUE) {
         // Get the ID of the inserted user

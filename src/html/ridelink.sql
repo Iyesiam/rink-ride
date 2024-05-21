@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 20, 2024 at 09:34 PM
+-- Generation Time: May 21, 2024 at 01:18 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -30,6 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `admin` (
   `admin_id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
+  `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -38,8 +39,8 @@ CREATE TABLE `admin` (
 -- Dumping data for table `admin`
 --
 
-INSERT INTO `admin` (`admin_id`, `username`, `password`, `created_at`) VALUES
-(1, 'admin', 'admin123', '2024-05-20 18:37:06');
+INSERT INTO `admin` (`admin_id`, `username`, `email`, `password`, `created_at`) VALUES
+(2, 'admin', 'admin@example.com', '$2y$10$e1RixKc1F2yG2z/6Kz9rduRIPBLT7wqxTBwTS92.6mNHl3bZiN5CG', '2024-05-20 10:03:45');
 
 -- --------------------------------------------------------
 
@@ -57,6 +58,13 @@ CREATE TABLE `booking_details` (
   `status` varchar(50) DEFAULT 'pending',
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `booking_details`
+--
+
+INSERT INTO `booking_details` (`booking_id`, `driver_id`, `driver_name`, `pickup_location`, `destination_location`, `booking_time`, `status`, `user_id`) VALUES
+(33, 17, 'test3', 'Nyabugogo', 'remera', '2024-05-21 09:52:31', 'accepted', 15);
 
 -- --------------------------------------------------------
 
@@ -759,7 +767,33 @@ INSERT INTO `user_locations` (`location_id`, `user_id`, `latitude`, `longitude`,
 (619, 17, -1.961864, 30.064282, '2024-05-20 18:18:20'),
 (620, 17, -1.961864, 30.064282, '2024-05-20 18:18:22'),
 (621, 17, -1.965972, 30.054957, '2024-05-20 18:29:53'),
-(622, 17, -1.965972, 30.054957, '2024-05-20 18:29:55');
+(622, 17, -1.965972, 30.054957, '2024-05-20 18:29:55'),
+(623, 17, -1.961864, 30.064282, '2024-05-20 20:00:14'),
+(624, 17, -1.961864, 30.064282, '2024-05-20 20:00:16'),
+(625, 17, -1.955489, 30.063868, '2024-05-21 09:34:08'),
+(626, 17, -1.955489, 30.063868, '2024-05-21 09:34:09'),
+(627, 17, -1.955489, 30.063868, '2024-05-21 09:34:11'),
+(628, 17, -1.955489, 30.063868, '2024-05-21 09:34:15'),
+(629, 17, -1.955489, 30.063868, '2024-05-21 09:34:23'),
+(630, 17, -1.955489, 30.063868, '2024-05-21 09:34:25'),
+(631, 17, -1.955489, 30.063868, '2024-05-21 09:34:25'),
+(632, 17, -1.955489, 30.063868, '2024-05-21 09:37:34'),
+(633, 17, -1.964923, 30.054957, '2024-05-21 09:37:36'),
+(634, 17, -1.955679, 30.063894, '2024-05-21 09:50:36'),
+(635, 17, -1.955679, 30.063894, '2024-05-21 09:50:38'),
+(636, 17, -1.955689, 30.063906, '2024-05-21 09:51:14'),
+(637, 17, -1.955689, 30.063906, '2024-05-21 09:52:41'),
+(638, 17, -1.955689, 30.063906, '2024-05-21 09:52:41'),
+(639, 17, -1.955689, 30.063906, '2024-05-21 09:52:44'),
+(640, 17, -1.955689, 30.063906, '2024-05-21 09:52:46'),
+(641, 17, -1.955689, 30.063906, '2024-05-21 09:53:04'),
+(642, 17, -1.955689, 30.063906, '2024-05-21 09:53:05'),
+(643, 17, -1.955675, 30.063889, '2024-05-21 09:53:28'),
+(644, 17, -1.955675, 30.063889, '2024-05-21 09:53:28'),
+(645, 17, -1.955675, 30.063889, '2024-05-21 09:55:09'),
+(646, 17, -1.955675, 30.063889, '2024-05-21 09:55:11'),
+(647, 17, -1.955600, 30.063908, '2024-05-21 09:57:19'),
+(648, 17, -1.955600, 30.063908, '2024-05-21 09:57:20');
 
 -- --------------------------------------------------------
 
@@ -781,7 +815,7 @@ CREATE TABLE `user_sessions` (
 --
 
 INSERT INTO `user_sessions` (`session_id`, `user_id`, `session_token`, `status`, `start_time`, `end_time`) VALUES
-(143, 17, '1223c2de541b70e6358882fb06f0a9c7', 'active', '2024-05-20 19:01:30', NULL);
+(150, 28, '7c608fb251df8954ba3372825d04b3b3', 'active', '2024-05-21 09:58:11', NULL);
 
 --
 -- Indexes for dumped tables
@@ -842,13 +876,13 @@ ALTER TABLE `user_sessions`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `booking_details`
 --
 ALTER TABLE `booking_details`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `car_owners`
@@ -872,13 +906,13 @@ ALTER TABLE `user_documents`
 -- AUTO_INCREMENT for table `user_locations`
 --
 ALTER TABLE `user_locations`
-  MODIFY `location_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=623;
+  MODIFY `location_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=649;
 
 --
 -- AUTO_INCREMENT for table `user_sessions`
 --
 ALTER TABLE `user_sessions`
-  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
+  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=151;
 
 --
 -- Constraints for dumped tables
