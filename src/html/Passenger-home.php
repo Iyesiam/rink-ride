@@ -19,6 +19,72 @@ if (!isset($_SESSION["user_id"])) {
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 60px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%; /* Could be more or less, depending on screen size */
+        max-width: 400px; /* Limit the max width for smaller modals */
+        position: relative; /* For positioning the close button */
+        border-radius: 10px; /* Rounded corners */
+    }
+
+    .close {
+        color: #aaa;
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .whatsapp-button {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px; /* Smaller padding for a smaller button */
+        background-color: #25D366; /* WhatsApp brand color */
+        color: #FFF;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+        margin-top: 10px;
+        font-size: 14px; /* Smaller font size */
+    }
+
+    .whatsapp-button i {
+        margin-right: 5px; /* Smaller margin for the icon */
+    }
+
+    .whatsapp-button:hover {
+        background-color: #128C7E; /* Darker shade on hover */
+    }
+</style>
 
 
 
@@ -135,40 +201,27 @@ if (!isset($_SESSION["user_id"])) {
         <div class="col-8">
             <h5 class="card-title mb-9 fw-semibold">Nearby Drivers</h5>
         </div>
-
         <?php
-        // Database connection
-        $servername = "localhost";
-        $username = "root"; // your database username
-        $password = ""; // your database password
-        $dbname = "ridelink"; // your database name
+        // Include the database connection file
+        include('config.php');
 
-        // Create connection
-        $conn = new mysqli($servername, $username, $password, $dbname);
-
-        // Check connection
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-
-        // Fetch nearby private drivers with active sessions
-        $sql = "SELECT * FROM users u
-        INNER JOIN user_sessions s ON u.user_id = s.user_id
-        WHERE u.role = 'private_driver' AND s.status = 'active'";
+        // Fetch nearby private drivers with active sessions and additional information
+        $sql = "SELECT u.user_id, u.name, u.email, u.phone, s.status 
+                FROM users u
+                INNER JOIN user_sessions s ON u.user_id = s.user_id
+                WHERE u.role = 'private_driver' AND s.status = 'active'";
         $result = $conn->query($sql);
 
         // Check if there are any nearby private drivers with active sessions
         if ($result->num_rows > 0) {
             // Output data of each row
             while ($row = $result->fetch_assoc()) {
-                // Output the details of each nearby private driver
                 echo "<div class='col-8'>";
                 echo "<h5 class='card-title mb-9 fw-semibold'>" . $row["name"] . "</h5>";
                 echo "</div>";
                 echo "<div class='col-4'>";
-                echo "<div class='d-flex justify-content-end'>";
-                // Add data-driver-name attribute to store driver's name
-                echo "<button class='book-ride-btn' data-driver-name='" . $row["name"] . "'><i class='fa fa-car'></i></button>";
+                echo "<div class='d-flex justify-content-end'>";echo "<button class='btn btn-primary more-info-btn' data-driver-id='" . $row["user_id"] . "' data-driver-name='" . $row["name"] . "' data-driver-email='" . $row["email"] . "' data-driver-phone='" . $row["phone"] . "'><i class='fa fa-info-circle'></i></button>";
+                echo "<button class='book-ride-btn' data-driver-name='" . $row["name"] . "' style='margin-left: 10px;'><i class='fa fa-car'></i></button>";
                 echo "</div>";
                 echo "</div>";
             }
@@ -176,13 +229,25 @@ if (!isset($_SESSION["user_id"])) {
             echo "No nearby private drivers found with active sessions";
         }
 
-        // Close database connection
         $conn->close();
         ?>
-
     </div>
 </div>
+
 </div>
+
+<div id="driverInfoModal" class="modal">
+    <div class="modal-content">
+        <span class="close"><i class="fa fa-times"></i></span>
+        <h2 id="driverName"></h2>
+        <p><strong>Email:</strong> <span id="driverEmail"></span></p>
+        <p><strong>Phone:</strong> <span id="driverPhone"></span></p>
+        <a id="whatsappLink" href="#" class="whatsapp-button" target="_blank">
+            <i class="fa fa-whatsapp"></i> WhatsApp Me
+        </a>
+    </div>
+</div>
+
 
 <!-- Separate division for booking form card -->
 <div class="card mt-4" id="booking-card" style="display: none;">
@@ -202,6 +267,54 @@ if (!isset($_SESSION["user_id"])) {
         </form>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the modal
+    var modal = document.getElementById("driverInfoModal");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Add event listeners to the more-info buttons
+    var moreInfoButtons = document.getElementsByClassName('more-info-btn');
+    for (var i = 0; i < moreInfoButtons.length; i++) {
+        moreInfoButtons[i].onclick = function() {
+            var driverName = this.getAttribute('data-driver-name');
+            var driverEmail = this.getAttribute('data-driver-email');
+            var driverPhone = this.getAttribute('data-driver-phone');
+            
+            // Add default country code if not already present
+            if (!driverPhone.startsWith('+')) {
+                driverPhone = '+25' + driverPhone;
+            }
+
+            // Update the modal content
+            document.getElementById('driverName').innerText = driverName;
+            document.getElementById('driverEmail').innerText = driverEmail;
+            document.getElementById('driverPhone').innerText = driverPhone;
+
+            // Update the WhatsApp link
+            var whatsappLink = document.getElementById('whatsappLink');
+            whatsappLink.href = "https://wa.me/" + driverPhone.replace(/\+/g, '');
+
+            // Display the modal
+            modal.style.display = "block";
+        }
+    }
+});
+</script>
 
 <!-- JavaScript to toggle visibility of booking form -->
 <script>

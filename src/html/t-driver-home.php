@@ -16,6 +16,8 @@ if (!isset($_SESSION["user_id"])) {
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-f0lbY+RDxPWJmqFrGzWdYzdrJSHJibLCR/GvJ4crVAC/3ywhi5tZGYxvU95Qvkeq+kBqCDTQf+6r0eYAaGSzdg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 <!-- Add this script inside the <head> tag -->
 <script>
     // Function to send location data to the server
@@ -91,10 +93,9 @@ if (!isset($_SESSION["user_id"])) {
           <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
             <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
               <li class="nav-item dropdown">
-                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
-                  aria-expanded="false">
-                  <img src="../assets/images/profile/user-1.jpg" alt="" width="35" height="35" class="rounded-circle">
-                </a>
+              <a class="nav-link nav-icon-hover" href="profile.php" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-cog"></i> <!-- Replace the image with a settings icon -->
+              </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                   <div class="message-body">
                     <a href="profile.php" class="d-flex align-items-center gap-2 dropdown-item">

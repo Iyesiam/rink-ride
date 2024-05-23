@@ -19,6 +19,7 @@ if (!isset($_SESSION["user_id"])) {
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-f0lbY+RDxPWJmqFrGzWdYzdrJSHJibLCR/GvJ4crVAC/3ywhi5tZGYxvU95Qvkeq+kBqCDTQf+6r0eYAaGSzdg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
 
@@ -50,10 +51,9 @@ if (!isset($_SESSION["user_id"])) {
           <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
             
             <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end"><li class="nav-item dropdown">
-                <a class="nav-link nav-icon-hover" href="profile.php" id="drop2" data-bs-toggle="dropdown"
-                  aria-expanded="false">
-                  <img src="../assets/images/profile/user-1.jpg" alt="" width="35" height="35" class="rounded-circle">
-                </a>
+            <a class="nav-link nav-icon-hover" href="profile.php" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-cog"></i> <!-- Replace the image with a settings icon -->
+              </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                   <div class="message-body">
                   <a href="profile.php" class="d-flex align-items-center gap-2 dropdown-item">
@@ -306,65 +306,6 @@ if (!isset($_SESSION["user_id"])) {
         </div>
         <div class="row">
           <div class="col-lg-4 d-flex align-items-stretch">
-            <div class="card w-100">
-            <div class="card-body p-4">
-    <div class="mb-4">
-        <h5 class="card-title fw-semibold">Recent Rides</h5>
-    </div>
-    <ul class="timeline-widget mb-0 position-relative mb-n5">
-        <?php
-        // Database connection
-        $servername = "localhost";
-        $username = "root"; // your database username
-        $password = ""; // your database password
-        $dbname = "ridelink"; // your database name
-
-        // Create connection
-        $conn = new mysqli($servername, $username, $password, $dbname);
-
-        // Check connection
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-
-        // Retrieve recent rides from the database
-        $sql = "SELECT pickup_location, destination_location, booking_time FROM booking_details ORDER BY booking_time DESC LIMIT 5";
-        $result = $conn->query($sql);
-
-        // Check if there are any results
-        if ($result->num_rows > 0) {
-            // Output data of each row
-            while ($row = $result->fetch_assoc()) {
-                $pickup_location = $row["pickup_location"];
-                $destination_location = $row["destination_location"];
-                $booking_time = $row["booking_time"];
-
-                // Format the booking time
-                $formatted_booking_time = date("h:i a", strtotime($booking_time));
-
-                // Generate HTML for the timeline item
-                echo '<li class="timeline-item d-flex position-relative overflow-hidden">
-                        <div class="timeline-time text-dark flex-shrink-0 text-end">' . $formatted_booking_time . '</div>
-                        <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                            <span class="timeline-badge border-2 border border-primary flex-shrink-0 my-8"></span>
-                            <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                        </div>
-                        <div class="timeline-desc fs-3 text-dark mt-n1">' . $pickup_location . '-' . $destination_location . '</div>
-                    </li>';
-            }
-        } else {
-            echo '<li class="timeline-item d-flex position-relative overflow-hidden">
-                    <div class="timeline-desc fs-3 text-dark mt-n1">No recent rides found.</div>
-                  </li>';
-        }
-
-        // Close database connection
-        $conn->close();
-        ?>
-    </ul>
-            </div>
-
-            </div>
           </div>
 
          
