@@ -253,7 +253,7 @@ $userResult = $conn->query($userSql);
             <footer class="footer fixed-bottom">
                 <div class="container-fluid">
                     <div class="py-3 px-6 text-center">
-                        <p class="mb-0 fs-5">Designed and Developed by Ridelink corp</p>
+                        <p class="mb-0 fs-5">Designed and Developed by Ridelink</p>
                     </div>
                 </div>
             </footer>

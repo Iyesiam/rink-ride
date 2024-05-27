@@ -419,74 +419,12 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="row">
           <div class="col-lg-4 d-flex align-items-stretch">
             <div class="card w-100">
-            <div class="card-body p-4">
-    <div class="mb-4">
-        <h5 class="card-title fw-semibold">Recent Rides</h5>
-    </div>
-    <ul class="timeline-widget mb-0 position-relative mb-n5">
-        <?php
-
-        // Database connection
-        $servername = "localhost";
-        $username = "root"; // your database username
-        $password = ""; // your database password
-        $dbname = "ridelink"; // your database name
-
-        // Create connection
-        $conn = new mysqli($servername, $username, $password, $dbname);
-
-        // Check connection
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-
-        // Retrieve the current user's ID
-        $user_id = $_SESSION["user_id"];
-
-        // Retrieve recent rides for the current user from the database
-        $sql = "SELECT pickup_location, destination_location, booking_time FROM booking_details WHERE user_id = $user_id ORDER BY booking_time DESC LIMIT 5";
-        $result = $conn->query($sql);
-
-        // Check if there are any results
-        if ($result->num_rows > 0) {
-            // Output data of each row
-            while ($row = $result->fetch_assoc()) {
-                $pickup_location = $row["pickup_location"];
-                $destination_location = $row["destination_location"];
-                $booking_time = $row["booking_time"];
-
-                // Format the booking time
-                $formatted_booking_time = date("h:i a", strtotime($booking_time));
-
-                // Generate HTML for the timeline item
-                echo '<li class="timeline-item d-flex position-relative overflow-hidden">
-                        <div class="timeline-time text-dark flex-shrink-0 text-end">' . $formatted_booking_time . '</div>
-                        <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                            <span class="timeline-badge border-2 border border-primary flex-shrink-0 my-8"></span>
-                            <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                        </div>
-                        <div class="timeline-desc fs-3 text-dark mt-n1">' . $pickup_location . '-' . $destination_location . '</div>
-                    </li>';
-            }
-        } else {
-            echo '<li class="timeline-item d-flex position-relative overflow-hidden">
-                    <div class="timeline-desc fs-3 text-dark mt-n1">No recent rides found.</div>
-                  </li>';
-        }
-
-        // Close database connection
-        $conn->close();
-        ?>
-    </ul>
-</div>
-
-
             </div>
           </div>
 
          
         <div class="py-6 px-6 text-center">
-          <p class="mb-0 fs-4">Design and Developed by Ridelink corp</p>
+          <p class="mb-0 fs-4">Design and Developed by Ridelink</p>
         </div>
       </div>
     </div>
