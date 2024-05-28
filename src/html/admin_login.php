@@ -1,12 +1,4 @@
-<?php
-session_start();
 
-// Redirect to admin dashboard if already logged in
-if (isset($_SESSION['username'])) {
-    header("Location: admin-dash.php");
-    exit();
-}
-?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,11 +13,6 @@ if (isset($_SESSION['username'])) {
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <h2 class="mb-4">Admin Login</h2>
-                <?php if (isset($_GET['error'])) { ?>
-                    <div class="alert alert-danger" role="alert">
-                        <?php echo htmlspecialchars($_GET['error']); ?>
-                    </div>
-                <?php } ?>
                 <form method="POST" action="login_handler.php">
                     <div class="form-group">
                         <label for="username">Username</label>
@@ -35,7 +22,8 @@ if (isset($_SESSION['username'])) {
                         <label for="password">Password</label>
                         <input type="password" class="form-control" id="password" name="password" required>
                     </div>
-                    <button type="submit" name="login" class="btn btn-primary">Login</button>
+                    <a href="admin-dash.php" class="btn btn-primary">Login</a>
+
                 </form>
             </div>
         </div>
