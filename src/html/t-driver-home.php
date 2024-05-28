@@ -15,6 +15,7 @@ if (!isset($_SESSION["user_id"])) {
   <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-f0lbY+RDxPWJmqFrGzWdYzdrJSHJibLCR/GvJ4crVAC/3ywhi5tZGYxvU95Qvkeq+kBqCDTQf+6r0eYAaGSzdg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
@@ -91,18 +92,17 @@ if (!isset($_SESSION["user_id"])) {
             </li>
           </ul>
           <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
-            <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
-              <li class="nav-item dropdown">
-              <a class="nav-link nav-icon-hover" href="profile.php" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
+          <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end"><li class="nav-item dropdown">
+            <a class="nav-link nav-icon-hover" href="profile.php" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fas fa-cog"></i> <!-- Replace the image with a settings icon -->
               </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                   <div class="message-body">
-                    <a href="profile.php" class="d-flex align-items-center gap-2 dropdown-item">
-                      <i class="ti ti-user fs-6"></i>
-                      <p class="mb-0 fs-3">My Profile</p>
-                    </a>
-                    
+                  <a href="profile.php" class="d-flex align-items-center gap-2 dropdown-item">
+    <i class="ti ti-user fs-6"></i>
+    <p class="mb-0 fs-3">My Profile</p>
+</a>
+                  
                     <a href="logout.php" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
                   </div>
                 </div>
@@ -187,8 +187,11 @@ if (!isset($_SESSION["user_id"])) {
         if (isset($_SESSION["user_id"])) {
             $userId = $_SESSION["user_id"];
 
-            // Fetch ride requests for the logged-in private driver
-            $sql_requests = "SELECT * FROM booking_details WHERE driver_id = '$userId' AND status = 'pending'";
+            // Fetch ride requests for the logged-in private driver along with user names and phone numbers
+            $sql_requests = "SELECT booking_details.*, users.name AS user_name, users.phone AS user_phone 
+                             FROM booking_details 
+                             JOIN users ON booking_details.user_id = users.user_id 
+                             WHERE booking_details.driver_id = '$userId' AND booking_details.status = 'pending'";
             $result_requests = $conn->query($sql_requests);
 
             // Display ride requests
@@ -199,17 +202,20 @@ if (!isset($_SESSION["user_id"])) {
                     echo "<div class='card'>";
                     echo "<div class='card-body'>";
                     echo "<h5 class='card-title'>Request ID: " . $row_request["booking_id"] . "</h5>";
+                    echo "<p class='card-text'>Passanger Name: " . $row_request["user_name"] . "</p>";
+                    echo "<p class='card-text'>User Phone: " . $row_request["user_phone"] . "</p>";
                     echo "<p class='card-text'>Pickup Location: " . $row_request["pickup_location"] . "</p>";
                     echo "<p class='card-text'>Destination Location: " . $row_request["destination_location"] . "</p>";
                     echo "<p class='card-text'>Booking Time: " . $row_request["booking_time"] . "</p>";
+                    
                     // Accept and decline buttons with margin between them
                     echo "<form action='handle_bookingtmpdvr.php' method='POST'>";
-echo "<input type='hidden' name='booking_id' value='" . $row_request["booking_id"] . "'>";
-echo "<button type='submit' class='btn btn-success' name='accept'>Accept</button>";
-echo "&nbsp;"; // Non-breaking space
-echo "<button type='submit' class='btn btn-danger' name='decline'>Decline</button>";
-echo "</form>";
+                    echo "<input type='hidden' name='booking_id' value='" . $row_request["booking_id"] . "'>";
+                    echo "<button type='submit' class='btn btn-success' name='accept'>Accept</button>";
+                    echo "&nbsp;"; // Non-breaking space
+                    echo "<button type='submit' class='btn btn-danger' name='decline'>Decline</button>";
                     echo "</form>";
+
                     echo "</div>";
                     echo "</div>";
                     echo "</div>";
@@ -222,7 +228,9 @@ echo "</form>";
         }
         ?>
     </div>
-                </div>
+</div>
+
+
 
 
 
@@ -272,7 +280,7 @@ echo "</form>";
 
     </div>
 </div>
-        <div class="py-6 px-6 text-center">
+      div class="py-6 px-6 text-center">
           <p class="mb-0 fs-4">Design and Developed by Ridelink</p>
         </div>
       </div>

@@ -53,28 +53,28 @@
     </div>
     <div class="mb-3" id="idDocumentField" style="display: none;">
         <label for="idDocument" class="form-label">ID Document</label>
-        <input type="file" class="form-control" id="idDocument" name="idDocument">
+        <input type="file" class="form-control" id="idDocument" name="idDocument"required>
     </div>
     <div class="mb-3" id="drivingLicenseField" style="display: none;">
         <label for="drivingLicense" class="form-label">Driving License</label>
-        <input type="file" class="form-control" id="drivingLicense" name="drivingLicense">
+        <input type="file" class="form-control" id="drivingLicense" name="drivingLicense"required>
     </div>
     <div class="mb-3" id="vehicleRegistrationField" style="display: none;">
         <label for="vehicleRegistration" class="form-label">Vehicle Registration</label>
-        <input type="file" class="form-control" id="vehicleRegistration" name="vehicleRegistration">
+        <input type="file" class="form-control" id="vehicleRegistration" name="vehicleRegistration"required>
     </div>
     <!-- New fields for car owners -->
     <div class="mb-3" id="vehicleMake" style="display: none;">
         <label for="vehicleMake" class="form-label">Vehicle Make</label>
-        <input type="text" class="form-control" id="vehicleMake" name="vehicleMake">
+        <input type="text" class="form-control" id="vehicleMake" name="vehicleMake"required>
     </div>
     <div class="mb-3" id="vehicleModel" style="display: none;">
         <label for="vehicleModel" class="form-label">Vehicle Model</label>
-        <input type="text" class="form-control" id="vehicleModel" name="vehicleModel">
+        <input type="text" class="form-control" id="vehicleModel" name="vehicleModel"required>
     </div>
     <div class="mb-3" id="vehicleYear" style="display: none;">
         <label for="vehicleYear" class="form-label">Vehicle Year</label>
-        <input type="number" class="form-control" id="vehicleYear" name="vehicleYear">
+        <input type="number" class="form-control" id="vehicleYear" name="vehicleYear"required>
     </div>
     <!-- End of new fields -->
     <button type="submit" class="btn btn-primary w-100 py-2 fs-4 mb-4 rounded-2">Sign Up</button>

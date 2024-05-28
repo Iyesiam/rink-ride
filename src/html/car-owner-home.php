@@ -345,8 +345,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (isset($_SESSION["user_id"])) {
         $userId = $_SESSION["user_id"];
 
-        // Fetch ride requests for the logged-in user
-        $sql_requests = "SELECT * FROM booking_details WHERE user_id = '$userId'";
+        // Fetch ride requests for the logged-in user along with the user name
+        $sql_requests = "SELECT booking_details.*, users.name AS user_name 
+                         FROM booking_details 
+                         JOIN users ON booking_details.user_id = users.user_id 
+                         WHERE booking_details.user_id = '$userId'";
         $result_requests = $conn->query($sql_requests);
 
         // Display ride requests
@@ -357,6 +360,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 echo "<div class='card'>";
                 echo "<div class='card-body'>";
                 echo "<h5 class='card-title'>Request ID: " . $row_request["booking_id"] . "</h5>";
+                echo "<p class='card-text'>User Name: " . $row_request["user_name"] . "</p>";
                 echo "<p class='card-text'>Pickup Location: " . $row_request["pickup_location"] . "</p>";
                 echo "<p class='card-text'>Destination Location: " . $row_request["destination_location"] . "</p>";
                 echo "<p class='card-text'>Booking Time: " . $row_request["booking_time"] . "</p>";
@@ -373,8 +377,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         break;
                     case 'declined':
                         $statusColor = "red";
+                        break;
                     case 'cancelled':
-                          $statusColor = "red";
+                        $statusColor = "red";
                         break;
                     default:
                         $statusColor = "black";
@@ -400,10 +405,9 @@ document.addEventListener('DOMContentLoaded', function() {
         echo "<p>User not logged in.</p>";
     }
     ?>
-
-
     </div>
 </div>
+
 
 
 
@@ -424,7 +428,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
          
         <div class="py-6 px-6 text-center">
-          <p class="mb-0 fs-4">Design and Developed by Ridelink corp</p>
+          <p class="mb-0 fs-4">Design and Developed by Ridelink</p>
         </div>
       </div>
     </div>

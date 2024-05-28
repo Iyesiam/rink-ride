@@ -213,7 +213,7 @@
                     var toCoords = [parseFloat(data[1][0].lat), parseFloat(data[1][0].lon)];
 
                     // Fetch route from OpenRouteService API
-                    fetch('https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf62488b06281daaaa4005bd07488d4eecdc6a&start=' + fromCoords[1] + ',' + fromCoords[0] + '&end=' + toCoords[1] + ',' + toCoords[0])
+                    fetch('https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf62480fd2916978f7464282cf70e2aa662028&start=' + fromCoords[1] + ',' + fromCoords[0] + '&end=' + toCoords[1] + ',' + toCoords[0])
                         .then(response => response.json())
                         .then(data => {
                             var routeCoordinates = data.features[0].geometry.coordinates;
