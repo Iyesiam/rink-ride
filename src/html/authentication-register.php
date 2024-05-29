@@ -27,23 +27,23 @@
     <form method="post" action="register.php" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="name" name="name" aria-describedby="textHelp" required>
+            <input type="text" class="form-control" id="name" name="name" aria-describedby="textHelp">
         </div>
         <div class="mb-3">
             <label for="email" class="form-label">Email Address</label>
-            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" required>
+            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
         </div>
         <div class="mb-3">
             <label for="phone" class="form-label">Phone Number</label>
-            <input type="tel" class="form-control" id="phone" name="phone" required>
+            <input type="tel" class="form-control" id="phone" name="phone">
         </div>
         <div class="mb-4">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required>
+            <input type="password" class="form-control" id="password" name="password">
         </div>
         <div class="mb-3">
             <label for="role" class="form-label">Role</label>
-            <select class="form-select" id="role" name="role" onchange="showDocumentsFields()" required>
+            <select class="form-select" id="role" name="role" onchange="showDocumentsFields()">
                 <option value="">Select Role</option>
                 <option value="passenger">Passenger</option>
                 <option value="temporary_driver">Temporary Driver</option>
@@ -83,7 +83,7 @@
             <a class="text-primary fw-bold ms-2" href="./index.php">Sign In</a>
         </div>
     </form>
-</div>
+                        </div>
 
                         </div>
                     </div>
@@ -95,31 +95,72 @@
     <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     function showDocumentsFields() {
-        var roleSelect = document.getElementById("role");
-        var selectedRole = roleSelect.options[roleSelect.selectedIndex].value;
+    var roleSelect = document.getElementById("role");
+    var selectedRole = roleSelect.options[roleSelect.selectedIndex].value;
 
-        // Hide all fields by default
-        document.getElementById("idDocumentField").style.display = "none";
-        document.getElementById("drivingLicenseField").style.display = "none";
-        document.getElementById("vehicleRegistrationField").style.display = "none";
-        document.getElementById("vehicleMake").style.display = "none";
-        document.getElementById("vehicleModel").style.display = "none";
-        document.getElementById("vehicleYear").style.display = "none";
+    // Get all field elements
+    var idDocumentField = document.getElementById("idDocumentField");
+    var idDocumentInput = document.getElementById("idDocument");
 
-        if (selectedRole === "temporary_driver" || selectedRole === "private_driver") {
-            document.getElementById("idDocumentField").style.display = "block";
-            document.getElementById("drivingLicenseField").style.display = "block";
-        }
-        if (selectedRole === "private_driver") {
-            document.getElementById("vehicleRegistrationField").style.display = "block";
-        }
-        if (selectedRole === "car_owner") {
-            document.getElementById("vehicleMake").style.display = "block";
-            document.getElementById("vehicleModel").style.display = "block";
-            document.getElementById("vehicleYear").style.display = "block";
-        }
+    var drivingLicenseField = document.getElementById("drivingLicenseField");
+    var drivingLicenseInput = document.getElementById("drivingLicense");
+
+    var vehicleRegistrationField = document.getElementById("vehicleRegistrationField");
+    var vehicleRegistrationInput = document.getElementById("vehicleRegistration");
+
+    var vehicleMakeField = document.getElementById("vehicleMake");
+    var vehicleMakeInput = document.getElementById("vehicleMake");
+
+    var vehicleModelField = document.getElementById("vehicleModel");
+    var vehicleModelInput = document.getElementById("vehicleModel");
+
+    var vehicleYearField = document.getElementById("vehicleYear");
+    var vehicleYearInput = document.getElementById("vehicleYear");
+
+    // Hide and remove required attribute from all fields by default
+    idDocumentField.style.display = "none";
+    idDocumentInput.removeAttribute("required");
+
+    drivingLicenseField.style.display = "none";
+    drivingLicenseInput.removeAttribute("required");
+
+    vehicleRegistrationField.style.display = "none";
+    vehicleRegistrationInput.removeAttribute("required");
+
+    vehicleMakeField.style.display = "none";
+    vehicleMakeInput.removeAttribute("required");
+
+    vehicleModelField.style.display = "none";
+    vehicleModelInput.removeAttribute("required");
+
+    vehicleYearField.style.display = "none";
+    vehicleYearInput.removeAttribute("required");
+
+    // Show and add required attribute to fields based on selected role
+    if (selectedRole === "temporary_driver" || selectedRole === "private_driver") {
+        idDocumentField.style.display = "block";
+        idDocumentInput.setAttribute("required", "required");
+
+        drivingLicenseField.style.display = "block";
+        drivingLicenseInput.setAttribute("required", "required");
     }
-</script>
+    if (selectedRole === "private_driver") {
+        vehicleRegistrationField.style.display = "block";
+        vehicleRegistrationInput.setAttribute("required", "required");
+    }
+    if (selectedRole === "car_owner") {
+        vehicleMakeField.style.display = "block";
+        vehicleMakeInput.setAttribute("required", "required");
+
+        vehicleModelField.style.display = "block";
+        vehicleModelInput.setAttribute("required", "required");
+
+        vehicleYearField.style.display = "block";
+        vehicleYearInput.setAttribute("required", "required");
+    }
+}
+
+    </script>
 </body>
 
 </html>
