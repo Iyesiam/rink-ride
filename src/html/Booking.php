@@ -39,14 +39,14 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            padding-bottom: 80px; /* Adjusted padding for footer */
+            padding-bottom: 80px;
             position: relative;
         }
 
         #map {
             height: 400px;
             width: 100%;
-            margin-top: 20px; /* Added margin to separate map from route info */
+            margin-top: 20px;
         }
 
         form {
@@ -59,7 +59,8 @@
         }
 
         input[type="text"],
-        input[type="submit"] {
+        input[type="submit"],
+        button {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
@@ -68,13 +69,15 @@
             box-sizing: border-box;
         }
 
-        input[type="submit"] {
+        input[type="submit"],
+        button {
             background-color: #007bff;
             color: #fff;
             cursor: pointer;
         }
 
-        input[type="submit"]:hover {
+        input[type="submit"]:hover,
+        button:hover {
             background-color: #0056b3;
         }
 
@@ -89,18 +92,17 @@
         }
 
         .loading-indicator {
-    display: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000; /* Ensure the loading indicator is on top of the map */
-}
-
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
 
         .loading-text {
             font-weight: bold;
@@ -126,13 +128,19 @@
             }
         }
 
-        /* iOS Font for Heading */
         .ios-font {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
             font-weight: bold;
             font-size: 1.5em;
         }
 
+        /* Smaller button class */
+        .small-button {
+            padding: 5px 10px;
+            font-size: 0.8em;
+            width: auto;
+            display: inline-block;
+        }
     </style>
 </head>
 
@@ -147,6 +155,7 @@
         <form id="routeForm">
             <label for="from">From:</label>
             <input type="text" id="from" placeholder="Enter starting location">
+            <button type="button" class="small-button" onclick="getCurrentLocation()">Use Current Location</button>
 
             <label for="to">To:</label>
             <input type="text" id="to" placeholder="Enter destination location">
@@ -176,7 +185,6 @@
     <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/app.min.js"></script>
     <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
-    <!-- Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         var map = L.map('map').setView([-1.9441, 30.0619], 13); // Set initial map view to Kigali
@@ -194,6 +202,48 @@
         var distanceElement = document.getElementById('distance');
         var etaElement = document.getElementById('eta');
 
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            var fromInput = document.getElementById("from");
+
+            // Use reverse geocoding to get readable address from coordinates
+            fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lon)
+                .then(response => response.json())
+                .then(data => {
+                    fromInput.value = data.display_name; // Set the readable address in the "From" field
+                })
+                .catch(error => {
+                    console.error('Error reverse geocoding:', error);
+                    fromInput.value = lat + ', ' + lon; // Set the coordinates if reverse geocoding fails
+                });
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+
         document.getElementById("routeForm").addEventListener("submit", function (event) {
             event.preventDefault();
             var from = document.getElementById("from").value;
@@ -202,7 +252,6 @@
             // Show loading indicator
             loadingIndicator.style.display = 'block';
 
-            // Use Nominatim API for geocoding
             var fromUrl = 'https://nominatim.openstreetmap.org/search?format=json&q=' + from;
             var toUrl = 'https://nominatim.openstreetmap.org/search?format=json&q=' + to;
 
@@ -212,14 +261,12 @@
                     var fromCoords = [parseFloat(data[0][0].lat), parseFloat(data[0][0].lon)];
                     var toCoords = [parseFloat(data[1][0].lat), parseFloat(data[1][0].lon)];
 
-                    // Fetch route from OpenRouteService API
                     fetch('https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf62480fd2916978f7464282cf70e2aa662028&start=' + fromCoords[1] + ',' + fromCoords[0] + '&end=' + toCoords[1] + ',' + toCoords[0])
                         .then(response => response.json())
                         .then(data => {
                             var routeCoordinates = data.features[0].geometry.coordinates;
                             var latlngs = routeCoordinates.map(coord => [coord[1], coord[0]]);
 
-                            // Remove existing polyline and markers if they exist
                             if (polyline) {
                                 map.removeLayer(polyline);
                             }
@@ -230,36 +277,26 @@
                                 map.removeLayer(endMarker);
                             }
 
-                            // Draw polyline
                             polyline = L.polyline(latlngs, { color: 'blue' }).addTo(map);
-
-                            // Add markers for start and end points
                             startMarker = L.marker(latlngs[0]).addTo(map);
                             endMarker = L.marker(latlngs[latlngs.length - 1]).addTo(map);
-
-                            // Fit the map to the bounds of the route
                             map.fitBounds(polyline.getBounds());
 
-                            // Display route information
-                            var distance = (data.features[0].properties.summary.distance / 1000).toFixed(2); // Convert meters to kilometers
-                            var duration = Math.round(data.features[0].properties.summary.duration / 60); // Convert seconds to minutes
+                            var distance = (data.features[0].properties.summary.distance / 1000).toFixed(2);
+                            var duration = Math.round(data.features[0].properties.summary.duration / 60);
                             distanceElement.textContent = 'Distance: ' + distance + ' km';
                             etaElement.textContent = 'Estimated Time: ' + duration + ' minutes';
-                            routeTitle.textContent = from + ' - ' + to; // Set heading to starting and destination locations separated by a hyphen
+                            routeTitle.textContent = from + ' - ' + to;
                             routeInfo.style.display = 'block';
-
-                            // Hide loading indicator
                             loadingIndicator.style.display = 'none';
                         })
                         .catch(error => {
                             console.error('Error fetching route:', error);
-                            // Hide loading indicator in case of error
                             loadingIndicator.style.display = 'none';
                         });
                 })
                 .catch(error => {
                     console.error('Error geocoding:', error);
-                    // Hide loading indicator in case of error
                     loadingIndicator.style.display = 'none';
                 });
         });
