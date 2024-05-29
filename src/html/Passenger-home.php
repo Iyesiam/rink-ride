@@ -266,7 +266,7 @@ if (!isset($_SESSION["user_id"])) {
             <input type="text" class="form-control" id="pickup-location" name="pickup_location" required>
             <button type="button" class="btn btn-primary small-button" onclick="getCurrentLocation()">Use Current Location</button>
         </div>
-    </div>
+    
             <div class="mb-3">
                 <label for="destination-location" class="form-label">Destination Location:</label>
                 <input type="text" class="form-control" id="destination-location" name="destination_location" required>
