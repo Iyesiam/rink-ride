@@ -34,6 +34,14 @@ if (!isset($_SESSION["user_id"])) {
         background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
     }
 
+    .small-button {
+            padding: 5px 10px;
+            font-size: 0.8em;
+            width: auto;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
     .modal-content {
         background-color: #fefefe;
         margin: 5% auto; /* 15% from the top and centered */
@@ -85,7 +93,6 @@ if (!isset($_SESSION["user_id"])) {
         background-color: #128C7E; /* Darker shade on hover */
     }
 </style>
-
 
 
 </head>
@@ -152,7 +159,7 @@ if (!isset($_SESSION["user_id"])) {
 </div>
 
               
-<script>
+ <script>
                             // Initialize Leaflet map
                             var map = L.map('map').setView([0, 0], 13);
 
@@ -253,10 +260,13 @@ if (!isset($_SESSION["user_id"])) {
 <div class="card mt-4" id="booking-card" style="display: none;">
     <div class="card-body">
         <form action="book_ride.php" method="POST">
-            <div class="mb-3">
-                <label for="pickup-location" class="form-label">Pickup Location:</label>
-                <input type="text" class="form-control" id="pickup-location" name="pickup_location" required>
-            </div>
+        <div class="container mt-5">
+        <div class="mb-3">
+            <label for="pickup-location" class="form-label">Pickup Location:</label>
+            <input type="text" class="form-control" id="pickup-location" name="pickup_location" required>
+            <button type="button" class="btn btn-primary small-button" onclick="getCurrentLocation()">Use Current Location</button>
+        </div>
+    </div>
             <div class="mb-3">
                 <label for="destination-location" class="form-label">Destination Location:</label>
                 <input type="text" class="form-control" id="destination-location" name="destination_location" required>
@@ -267,6 +277,49 @@ if (!isset($_SESSION["user_id"])) {
         </form>
     </div>
 </div>
+<script>
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            var pickupLocationInput = document.getElementById("pickup-location");
+
+            // Use reverse geocoding to get readable address from coordinates
+            fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lon)
+                .then(response => response.json())
+                .then(data => {
+                    pickupLocationInput.value = data.display_name; // Set the readable address in the input field
+                })
+                .catch(error => {
+                    console.error('Error reverse geocoding:', error);
+                    pickupLocationInput.value = lat + ', ' + lon; // Set the coordinates if reverse geocoding fails
+                });
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+    </script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Get the modal
@@ -402,7 +455,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
     </div>
 </div>
+<script>
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
 
+        function showPosition(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            var pickupLocationInput = document.getElementById("pickup-location");
+
+            // Use reverse geocoding to get readable address from coordinates
+            fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lon)
+                .then(response => response.json())
+                .then(data => {
+                    pickupLocationInput.value = data.display_name; // Set the readable address in the input field
+                })
+                .catch(error => {
+                    console.error('Error reverse geocoding:', error);
+                    pickupLocationInput.value = lat + ', ' + lon; // Set the coordinates if reverse geocoding fails
+                });
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+    </script>
 
 
 <script>
