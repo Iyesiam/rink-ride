@@ -277,6 +277,8 @@ if (!isset($_SESSION["user_id"])) {
         </form>
     </div>
 </div>
+
+
 <script>
         function getCurrentLocation() {
             if (navigator.geolocation) {
@@ -385,7 +387,61 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 </script>
 
-<div class="card-body p-4">
+
+
+<script>
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            var pickupLocationInput = document.getElementById("pickup-location");
+
+            // Use reverse geocoding to get readable address from coordinates
+            fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lon)
+                .then(response => response.json())
+                .then(data => {
+                    pickupLocationInput.value = data.display_name; // Set the readable address in the input field
+                })
+                .catch(error => {
+                    console.error('Error reverse geocoding:', error);
+                    pickupLocationInput.value = lat + ', ' + lon; // Set the coordinates if reverse geocoding fails
+                });
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+    </script>
+
+
+<script>
+    function showBookingForm(driverName) {
+        document.getElementById("driver-name").value = driverName;
+        document.getElementById("booking-card").style.display = "block";
+    }
+</script>
+              </div>
+              <div class="card-body p-4">
     <h5 class="card-title mb-9 fw-semibold">Ride Requests</h5>
     <div class="row">
     <?php
@@ -455,59 +511,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     </div>
 </div>
-<script>
-        function getCurrentLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showError);
-            } else {
-                alert("Geolocation is not supported by this browser.");
-            }
-        }
-
-        function showPosition(position) {
-            var lat = position.coords.latitude;
-            var lon = position.coords.longitude;
-            var pickupLocationInput = document.getElementById("pickup-location");
-
-            // Use reverse geocoding to get readable address from coordinates
-            fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lon)
-                .then(response => response.json())
-                .then(data => {
-                    pickupLocationInput.value = data.display_name; // Set the readable address in the input field
-                })
-                .catch(error => {
-                    console.error('Error reverse geocoding:', error);
-                    pickupLocationInput.value = lat + ', ' + lon; // Set the coordinates if reverse geocoding fails
-                });
-        }
-
-        function showError(error) {
-            switch (error.code) {
-                case error.PERMISSION_DENIED:
-                    alert("User denied the request for Geolocation.");
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    alert("Location information is unavailable.");
-                    break;
-                case error.TIMEOUT:
-                    alert("The request to get user location timed out.");
-                    break;
-                case error.UNKNOWN_ERROR:
-                    alert("An unknown error occurred.");
-                    break;
-            }
-        }
-    </script>
-
-
-<script>
-    function showBookingForm(driverName) {
-        document.getElementById("driver-name").value = driverName;
-        document.getElementById("booking-card").style.display = "block";
-    }
-</script>
-
-              </div>
             </div>
           </div>
         </div>
@@ -516,6 +519,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="card w-100">
             </div>
           </div>
+          
 
          
         <div class="py-6 px-6 text-center">
