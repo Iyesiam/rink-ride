@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION["user_id"])) {
+    header("Location: index.php"); // Redirect to the login page if not authenticated
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -141,12 +148,24 @@
             width: auto;
             display: inline-block;
         }
+        .menu-icon .btn {
+    background-color: white;
+    color: #007bff; /* Bootstrap primary blue color */
+    border-color: #007bff; /* Bootstrap primary blue border color */
+}
+
+.menu-icon .btn:hover {
+    background-color: #ccc; /* Bootstrap primary blue color */
+    color: white;
+    border-color: #007bff; /* Keep border color same as button */
+}
+
     </style>
 </head>
 
 <body>
     <header>
-        <div class="menu-icon">&#9776;</div>
+        <div class="menu-icon"> <a href="logout.php" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a></div>
         <h1 class="brand">Ridelink</h1>
     </header>
 
