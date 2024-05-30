@@ -15,50 +15,145 @@ if (!isset($_SESSION["user_id"])) {
   <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-f0lbY+RDxPWJmqFrGzWdYzdrJSHJibLCR/GvJ4crVAC/3ywhi5tZGYxvU95Qvkeq+kBqCDTQf+6r0eYAaGSzdg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+</script>
+
+<!-- CSS for Modal, More Info Button, and WhatsApp Button -->
+<style>
+/* General styles */
+.card-body {
+    padding: 20px;
+}
+
+.card-title {
+    margin-bottom: 10px;
+}
+
+.passenger-info {
+    margin-bottom: 15px;
+}
+
+/* Modal styles */
+.modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 60px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%; /* Could be more or less, depending on screen size */
+        max-width: 400px; /* Limit the max width for smaller modals */
+        position: relative; /* For positioning the close button */
+        border-radius: 10px; /* Rounded corners */
+    }
+
+    .close {
+        color: #aaa;
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .whatsapp-button {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px; /* Smaller padding for a smaller button */
+        background-color: #25D366; /* WhatsApp brand color */
+        color: #FFF;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+        margin-top: 10px;
+        font-size: 14px; /* Smaller font size */
+    }
+
+    .whatsapp-button i {
+        margin-right: 5px; /* Smaller margin for the icon */
+    }
+
+    .whatsapp-button:hover {
+        background-color: #128C7E; /* Darker shade on hover */
+    }
+
+/* More Info button styles */
+.more-info-btn {
+    font-size: 10px;
+    padding: 8px 12px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.more-info-btn i {
+    margin-right: 5px;
+}
+
+/* Adjust spacing between buttons and rows */
+.d-flex .btn {
+    margin-right: 5px;
+}
+
+.d-flex .btn:last-child {
+    margin-right: 0;
+}
+</style>
 <!-- Add this script inside the <head> tag -->
 <script>
-    // Function to send location data to the server
-    function sendLocation(latitude, longitude) {
-        // Create a FormData object
-        var formData = new FormData();
-        formData.append('latitude', latitude);
-        formData.append('longitude', longitude);
+document.addEventListener('DOMContentLoaded', function () {
+    var modal = document.getElementById('passengerInfoModal');
+    var closeBtn = modal.querySelector('.close');
+    var moreInfoButtons = document.querySelectorAll('.more-info-btn');
 
-        // Send a POST request to the store.php file
-        fetch('store.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.text();
-        })
-        .then(data => {
-            console.log(data); // Log the response from the server
-        })
-        .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
+    moreInfoButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var name = button.getAttribute('data-passenger-name');
+            var email = button.getAttribute('data-passenger-email');
+            var phone = button.getAttribute('data-passenger-phone');
+
+            document.getElementById('passengerName').innerText = name;
+            document.getElementById('passengerEmail').innerText = email;
+            document.getElementById('passengerPhone').innerText = phone;
+            document.getElementById('whatsappLink').href = 'https://wa.me/' + phone;
+
+            modal.style.display = 'block';
         });
-    }
+    });
 
-    // Function to track driver location
-    function trackDriverLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.watchPosition(function (position) {
-                var latitude = position.coords.latitude;
-                var longitude = position.coords.longitude;
-                sendLocation(latitude, longitude); // Send location data to the server
-            });
-        } else {
-            alert("Geolocation is not supported by this browser.");
+    closeBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
         }
-    }
-
-    // Call the function to track driver location
-    trackDriverLocation();
+    });
+});
 </script>
 
 </head>
@@ -175,6 +270,93 @@ if (!isset($_SESSION["user_id"])) {
               <div class="col-lg-12">
                 <!-- Yearly Breakup -->
                 <div class="card overflow-hidden">
+                <div class="card-body">
+    <div class="row align-items-start">
+        <div class="col-8">
+            <h5 class="card-title mb-9 fw-semibold">Nearby Passengers</h5>
+        </div>
+        <?php
+        // Include the database connection file
+        include('config.php');
+
+        // Fetch nearby passengers with active sessions and additional information
+        $sql = "SELECT u.user_id, u.name, u.email, u.phone, s.status 
+                FROM users u
+                INNER JOIN user_sessions s ON u.user_id = s.user_id
+                WHERE u.role = 'passenger' AND s.status = 'active'";
+        $result = $conn->query($sql);
+
+        // Check if there are any nearby passengers with active sessions
+        if ($result->num_rows > 0) {
+            // Output data of each row
+            while ($row = $result->fetch_assoc()) {
+                $phoneWithCountryCode = '+25' . $row["phone"];
+                echo "<div class='col-8'>";
+                echo "<h5 class='card-title mb-9 fw-semibold'>" . $row["name"] . "</h5>";
+                echo "</div>";
+                echo "<div class='col-4'>";
+                echo "<div class='d-flex justify-content-end'>";
+                echo "<button class='btn btn-primary more-info-btn' data-passenger-id='" . $row["user_id"] . "' data-passenger-name='" . $row["name"] . "' data-passenger-email='" . $row["email"] . "' data-passenger-phone='" . $phoneWithCountryCode . "'><i class='fa fa-info-circle'></i> More Info</button>";
+                echo "</div>";
+                echo "</div>";
+            }
+        } else {
+            echo "No nearby passengers found with active sessions";
+        }
+
+        $conn->close();
+        ?>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="passengerInfoModal" class="modal">
+        <div class="modal-content">
+            <span class="close"><i class="fa fa-times"></i></span>
+            <h2 id="passengerName"></h2>
+            <p><strong>Email:</strong> <span id="passengerEmail"></span></p>
+            <p><strong>Phone:</strong> <span id="passengerPhone"></span></p>
+            <a id="whatsappLink" href="#" class="whatsapp-button" target="_blank">
+                <i class="fa fa-whatsapp"></i> WhatsApp Me
+            </a>
+        </div>
+    </div>
+                </div>
+
+<!-- JavaScript for Modal Handling -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var modal = document.getElementById('passengerInfoModal');
+    var closeBtn = modal.querySelector('.close');
+    var moreInfoButtons = document.querySelectorAll('.more-info-btn');
+
+    moreInfoButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var name = button.getAttribute('data-passenger-name');
+            var email = button.getAttribute('data-passenger-email');
+            var phone = button.getAttribute('data-passenger-phone');
+
+            document.getElementById('passengerName').innerText = name;
+            document.getElementById('passengerEmail').innerText = email;
+            document.getElementById('passengerPhone').innerText = phone;
+            document.getElementById('whatsappLink').href = 'https://wa.me/' + phone;
+
+            modal.style.display = 'block';
+        });
+    });
+
+    closeBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    });
+});
+</script>
+</div>
+
                 <div class="card-body p-4">
     <h5 class="card-title mb-9 fw-semibold">Ride Requests</h5>
     <div class="row">
